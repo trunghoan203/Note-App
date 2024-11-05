@@ -1,37 +1,37 @@
-import { useState } from "react"
-import PasswordInput from "../../components/Input/PasswordInput"
-import { Link, useNavigate } from "react-router-dom"
-import { validateEmail } from "../../utils/helper"
-import axios from "axios"
-import { toast } from "react-toastify"
+import { useState } from "react";
+import PasswordInput from "../../components/Input/PasswordInput";
+import { Link, useNavigate } from "react-router-dom";
+import { validateEmail } from "../../utils/helper";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Signup = () => {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!name) {
-      setError("Vui lòng nhập tên của bạn")
-      return
+      setError("Vui lòng nhập tên của bạn");
+      return;
     }
 
     if (!validateEmail(email)) {
-      setError("Vui lòng nhập địa chỉ email hợp lệ")
-      return
+      setError("Vui lòng nhập địa chỉ email hợp lệ");
+      return;
     }
 
     if (!password) {
-      setError("Vui lòng nhập mật khẩu")
-      return
+      setError("Vui lòng nhập mật khẩu");
+      return;
     }
 
-    setError("")
+    setError("");
 
     // sign up api
     try {
@@ -39,25 +39,25 @@ const Signup = () => {
         "http://localhost:3000/api/auth/signup",
         { username: name, email, password },
         { withCredentials: true }
-      )
+      );
 
       if (res.data.success === false) {
-        setError(res.data.message)
-        toast.error(res.data.message)
-        return
+        setError(res.data.message);
+        toast.error(res.data.message);
+        return;
       }
 
-      toast.success(res.data.message)
+      toast.success(res.data.message);
 
-      setError("")
+      setError("");
 
-      navigate("/login")
+      navigate("/");
     } catch (error) {
-      toast.error(error.message)
-      console.log(error.message)
-      setError(error.message)
+      toast.error(error.message);
+      console.log(error.message);
+      setError(error.message);
     }
-  }
+  };
 
   return (
     <>
@@ -95,10 +95,7 @@ const Signup = () => {
 
             <p className="text-sm text-center mt-4">
               Bạn đã có tài khoản?{" "}
-              <Link
-                to={"/login"}
-                className="font-medium text-[#2B85FF] underline"
-              >
+              <Link to={"/"} className="font-medium text-[#2B85FF] underline">
                 Đăng nhập
               </Link>
             </p>
@@ -106,7 +103,7 @@ const Signup = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;
