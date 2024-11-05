@@ -1,37 +1,33 @@
 import { useEffect, useState, useRef } from "react";
-import NoteCard from "../../components/Cards/NoteCard"
-import { MdAdd } from "react-icons/md"
-import Modal from "react-modal"
-import AddEditNotes from "./AddEditNotes"
-import { useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import Navbar from "../../components/Navbar"
-import axios from "axios"
-import { toast } from "react-toastify"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
+import NoteCard from "../../components/Cards/NoteCard";
+import { MdAdd, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import AddEditNotes from "./AddEditNotes";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import axios from "axios";
+import { toast } from "react-toastify";
+import EmptyCard from "../../components/EmptyCard/EmptyCard";
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
   const initialUserCheck = useRef(false);
 
-  const [userInfo, setUserInfo] = useState(null)
-  const [allNotes, setAllNotes] = useState([])
-
-  const [isSearch, setIsSearch] = useState(false)
-
-  const navigate = useNavigate()
-
-  const [openAddEditModal, setOpenAddEditModal] = useState({
-    isShown: false,
-    type: "add",
-    data: null,
-  })
+  const [userInfo, setUserInfo] = useState(null);
+  const [allNotes, setAllNotes] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+  const [isAddEditVisible, setIsAddEditVisible] = useState(false);
+  const [addEditType, setAddEditType] = useState("add");
+  const [noteData, setNoteData] = useState(null);
 
   useEffect(() => {
     if (!initialUserCheck.current) {
       initialUserCheck.current = true;
       if (!currentUser) {
-        navigate("/login");
+        navigate("/");
       } else {
         setUserInfo(currentUser.rest);
         getAllNotes();
@@ -39,97 +35,97 @@ const Home = () => {
     }
   }, [currentUser, navigate]);
 
-  // get all notes
   const getAllNotes = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/note/all`, {
+      const res = await axios.get("http://localhost:3000/api/note/all", {
         withCredentials: true,
-      })
+      });
 
-      if (res.data.success === false) {
-        console.log(res.data)
-        return
-      }
-
-      setAllNotes(res.data.notes)
+      if (!res.data.success) return;
+      setAllNotes(res.data.notes);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleEdit = (noteDetails) => {
-    setOpenAddEditModal({ isShown: true, data: noteDetails, type: "edit" })
-  }
+    setAddEditType("edit");
+    setNoteData(noteDetails);
+    setIsAddEditVisible(true);
+  };
 
-  // Delete Note
   const deleteNote = async (data) => {
-    const noteId = data._id
+    const noteId = data._id;
 
     try {
       const res = await axios.delete(
-        "http://localhost:3000/api/note/delete/" + noteId,
+        `http://localhost:3000/api/note/delete/${noteId}`,
         { withCredentials: true }
-      )
+      );
 
-      if (res.data.success === false) {
-        toast.error(res.data.message)
-        return
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return;
       }
 
-      toast.success(res.data.message)
-      getAllNotes()
+      toast.success(res.data.message);
+      getAllNotes();
     } catch (error) {
-      toast(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   const onSearchNote = async (query) => {
     try {
       const res = await axios.get("http://localhost:3000/api/note/search", {
         params: { query },
         withCredentials: true,
-      })
+      });
 
-      if (res.data.success === false) {
-        console.log(res.data.message)
-        toast.error(res.data.message)
-        return
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return;
       }
 
-      setIsSearch(true)
-      setAllNotes(res.data.notes)
+      setIsSearch(true);
+      setAllNotes(res.data.notes);
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   const handleClearSearch = () => {
-    setIsSearch(false)
-    getAllNotes()
-  }
+    setIsSearch(false);
+    getAllNotes();
+  };
 
   const updateIsPinned = async (noteData) => {
-    const noteId = noteData._id
+    const noteId = noteData._id;
 
     try {
       const res = await axios.put(
-        "http://localhost:3000/api/note/update-note-pinned/" + noteId,
+        `http://localhost:3000/api/note/update-note-pinned/${noteId}`,
         { isPinned: !noteData.isPinned },
         { withCredentials: true }
-      )
+      );
 
-      if (res.data.success === false) {
-        toast.error(res.data.message)
-        console.log(res.data.message)
-        return
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return;
       }
 
-      toast.success(res.data.message)
-      getAllNotes()
+      toast.success(res.data.message);
+      getAllNotes();
     } catch (error) {
-      console.log(error.message)
+      toast.error(error.message);
     }
-  }
+  };
+
+  const handleAddNoteSuccess = () => {
+    getAllNotes();
+  };
+
+  const rightSidebarWidth = isRightSidebarOpen ? "20%" : "4rem";
 
   return (
     <>
@@ -139,76 +135,163 @@ const Home = () => {
         handleClearSearch={handleClearSearch}
       />
 
-      <div className="container mx-auto">
-        {allNotes.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-8 max-md:m-5">
-            {allNotes.map((note) => (
-              <NoteCard
-                key={note._id}
-                title={note.title}
-                date={note.createdAt}
-                content={note.content}
-                tags={note.tags}
-                isPinned={note.isPinned}
-                onEdit={() => {
-                  handleEdit(note)
+      <div className="flex h-screen" style={{ overflow: "hidden" }}>
+        {/* LeftSideBar */}
+        <aside
+          className={`transition-all duration-300 ${
+            isSidebarOpen ? "w-1/5" : "w-16"
+          } h-full bg-gray-100 p-4 relative shadow-md`}
+        >
+          {isSidebarOpen ? (
+            <>
+              <h2 className="text-xl font-semibold mb-6 text-center">
+                Ghi chú của bạn
+              </h2>
+              <button
+                className="w-full h-12 flex items-center justify-center rounded-md bg-[#2B85FF] hover:bg-blue-600 mb-2"
+                onClick={() => {
+                  setAddEditType("add");
+                  setNoteData(null);
+                  setIsAddEditVisible(true);
                 }}
-                onDelete={() => {
-                  deleteNote(note)
-                }}
-                onPinNote={() => {
-                  updateIsPinned(note)
-                }}
-              />
-            ))}
-          </div>
-        ) : (
-          <EmptyCard
-            imgSrc={
-              isSearch
-                ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtakcQoMFXwFwnlochk9fQSBkNYkO5rSyY9A&s"
-                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDCtZLuixBFGTqGKdWGLaSKiO3qyhW782aZA&s"
-            }
-            message={
-              isSearch
-                ? "Oops! Không tìm thấy ghi chú nào phù hợp với tìm kiếm của bạn"
-                : `Bạn đã sẵn sàng ghi lại những ý tưởng độc đáo? Chỉ cần nhấn vào nút "+" bên phải màn hình để mở ra không gian cho những dòng cảm hứng, suy tư của riêng bạn. Let's start!!!`
-            }
-          />
-        )}
+              >
+                <MdAdd className="text-[24px] text-white" />
+                <span className="ml-2 text-white">Thêm ghi chú</span>
+              </button>
+              <div className="mt-4 overflow-y-auto max-h-[calc(100vh-100px)]">
+                {isSearch && allNotes.length === 0 ? (
+                  <p className="text-center text-gray-500 mt-4">
+                    Oops! Không tìm thấy ghi chú nào phù hợp với tìm kiếm của
+                    bạn
+                  </p>
+                ) : (
+                  allNotes.map((note) => (
+                    <NoteCard
+                      key={note._id}
+                      title={note.title}
+                      date={note.createdAt}
+                      content={note.content}
+                      tags={note.tags}
+                      isPinned={note.isPinned}
+                      onEdit={() => handleEdit(note)}
+                      onDelete={() => deleteNote(note)}
+                      onPinNote={() => updateIsPinned(note)}
+                    />
+                  ))
+                )}
+                {allNotes.length === 0 && !isSearch && (
+                  <p className="text-center text-gray-500 mt-4">
+                    Không có ghi chú nào
+                  </p>
+                )}
+              </div>
+            </>
+          ) : null}
+
+          <button
+            className="w-full h-12 flex items-center justify-center rounded-md bg-[#2B85FF] hover:bg-blue-600"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            {isSidebarOpen ? (
+              <MdChevronLeft className="text-[24px] text-white" />
+            ) : (
+              <MdChevronRight className="text-[24px] text-white" />
+            )}
+          </button>
+        </aside>
+
+        {/* Main Content */}
+        <main
+          className={`flex-1 p-5 overflow-y-auto h-full transition-all duration-300 ${
+            isSidebarOpen ? "ml-0" : "ml-16"
+          }`}
+          style={{ margin: "auto", marginRight: rightSidebarWidth }}
+        >
+          {isAddEditVisible ? (
+            <AddEditNotes
+              onClose={() => {
+                setIsAddEditVisible(false);
+                setNoteData(null);
+                handleAddNoteSuccess();
+              }}
+              noteData={noteData}
+              type={addEditType}
+              getAllNotes={getAllNotes}
+            />
+          ) : (
+            <EmptyCard
+              message={
+                <>
+                  Chọn một ghi chú có sẵn hoặc{" "}
+                  <span
+                    className="underline cursor-pointer text-blue-600"
+                    onClick={() => {
+                      setAddEditType("add");
+                      setNoteData(null);
+                      setIsAddEditVisible(true);
+                    }}
+                  >
+                    tạo
+                  </span>{" "}
+                  ghi chú mới
+                </>
+              }
+            />
+          )}
+        </main>
+
+        {/* RightSideBar */}
+        <aside
+          className={`transition-all duration-300 ${
+            isRightSidebarOpen ? "w-1/5" : "w-16"
+          } h-full bg-gray-100 p-4 relative shadow-md`}
+          style={{ position: "absolute", right: 0 }}
+        >
+          {isRightSidebarOpen ? (
+            <>
+              <h2 className="text-xl font-semibold mb-6 text-center">
+                Chào bạn blabla
+              </h2>
+              <textarea
+                className="w-full h-24 p-2 border rounded-md mb-4"
+                placeholder="Nhập văn bản hoặc thêm tài liệu của bạn."
+              ></textarea>
+              <button className="w-full h-12 bg-[#2B85FF] hover:bg-blue-600 text-white rounded-md mb-2">
+                Tải lên tệp
+              </button>
+            </>
+          ) : null}
+
+          <button
+            className="w-full h-12 flex items-center justify-center rounded-md bg-[#2B85FF] hover:bg-blue-600"
+            onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
+          >
+            {isRightSidebarOpen ? (
+              <MdChevronLeft className="text-[24px] text-white" />
+            ) : (
+              <MdChevronRight className="text-[24px] text-white" />
+            )}
+          </button>
+        </aside>
       </div>
 
-      <button
-        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-[#2B85FF] hover:bg-blue-600 absolute right-10 bottom-10"
-        onClick={() => {
-          setOpenAddEditModal({ isShown: true, type: "add", data: null })
-        }}
-      >
-        <MdAdd className="text-[32px] text-white" />
-      </button>
+      <style>{`
+        html,
+        body {
+          height: 100%;
+          margin: 0;
+        }
 
-      <Modal
-        isOpen={openAddEditModal.isShown}
-        onRequestClose={() => { }}
-        style={{
-          overlay: {
-            backgroundColor: "rgba(0,0,0,0.2)",
-          },
-        }}
-        contentLabel=""
-        className="w-[40%] max-md:w-[60%] max-sm:w-[70%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-scroll"
-      >
-        <AddEditNotes
-          onClose={() =>
-            setOpenAddEditModal({ isShown: false, type: "add", data: null })
-          }
-          noteData={openAddEditModal.data}
-          type={openAddEditModal.type}
-          getAllNotes={getAllNotes}
-        />
-      </Modal>
+        #root {
+          height: 100%;
+        }
+
+        .flex {
+          display: flex;
+        }
+      `}</style>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
