@@ -98,18 +98,18 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
         <MdClose className="text-xl text-slate-400" />
       </button>
       <div className="flex flex-col gap-2">
-        <label className="input-label text-red-400 uppercase">Tiêu đề</label>
+        <label className="input-label text-black uppercase">Tiêu đề</label>
 
         <input
           type="text"
-          className="text-2xl text-slate-950 outline-none"
+          className="text-slate-950 outline-none"
           placeholder="Nhập tiêu đề tại đây."
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
       </div>
       <div className="flex flex-col gap-2 mt-4">
-        <label className="input-label text-red-400 uppercase">Nội dung</label>
+        <label className="input-label text-black uppercase">Nội dung</label>
 
         <textarea
           type="text"
@@ -122,14 +122,14 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
       </div>
 
       <div className="mt-3">
-        <label className="input-label text-red-400 uppercase">Thẻ</label>
+        <label className="input-label text-black uppercase">Thẻ</label>
         <TagInput tags={tags} setTags={setTags} />
       </div>
 
       {error && <p className="text-red-500 text-xs pt-4">{error}</p>}
 
       <button
-        className="btn-primary font-medium mt-5 p-3"
+        className="btn-primary font-medium mt-5 p-3 text-black bg-[#E9A5A5] hover:bg-[#C8BBBB]"
         onClick={handleAddNote}
       >
         {type === "edit" ? "Cập nhật" : "Thêm"}

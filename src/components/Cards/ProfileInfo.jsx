@@ -1,22 +1,17 @@
-import { getInitials } from "../../utils/helper";
-import PropTypes from "prop-types"; // Import PropTypes
-
-const ProfileInfo = ({ onLogout, userInfo }) => {
+import PropTypes from "prop-types";
+import { IoMdLogOut } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
+const ProfileInfo = ({ onLogout }) => {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100">
-        {getInitials(userInfo?.username)}
+      <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium">
+        <FaUserCircle className="text-2xl text-slate-950" />
       </div>
-
-      <div>
-        <p className="text-sm font-medium">{userInfo?.username}</p>
-      </div>
-
       <button
-        className="text-xs bg-bgsubmit p-2 rounded-md text-white hover:opacity-80"
+        className="text-sm bg- p-1 rounded-md text-white hover:opacity-80 flex items-center justify-center"
         onClick={onLogout}
       >
-        Đăng xuất
+        <IoMdLogOut className="text-xl text-black" />
       </button>
     </div>
   );

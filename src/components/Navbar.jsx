@@ -1,17 +1,17 @@
 import { useState } from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import SearchBar from "./SearchBar/SearchBar";
 import ProfileInfo from "./Cards/ProfileInfo";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import logo from "../assets/images/logo.png";
 import {
   signInSuccess,
   signoutFailure,
   signoutStart,
 } from "../redux/user/userSlice";
 import axios from "axios";
-import logo from './../assets/image/logo.png';
 
 const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,11 +54,9 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   };
 
   return (
-    <div className="bg-customGray flex items-center justify-between px-6 py-2 drop-shadow">
-      <Link to={"/"}>
-        <div className="text-center">
-          <img src={logo} alt="MemmoMind Logo" className="w-20" />
-        </div>
+    <div className="bg-[#E9E6E6] flex items-center justify-between px-6 py-2 drop-shadow">
+      <Link to={"/homepage"}>
+        <img src={logo} alt="Logo" className="h-15 w-20" />
       </Link>
 
       <SearchBar
