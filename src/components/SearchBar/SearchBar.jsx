@@ -4,11 +4,12 @@ import { IoMdClose } from "react-icons/io";
 
 const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
   return (
-    <div className="w-40 sm:w-60 md:w-80 flex items-center px-4 bg-slate-100 rounded-md">
+    <div className="w-40 sm:w-60 md:w-80 flex items-center px-4 bg-bgNavBar rounded-md">
       <input
         type="text"
         placeholder="Tìm ghi chú..."
-        className="w-full text-xs bg-transparent py-[11px] outline-none"
+        style={{ backgroundColor: '#E9E6E6', color: 'black' }}
+        className="w-full text-xs py-[11px] outline-none"
         value={value}
         onChange={onChange}
       />

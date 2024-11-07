@@ -13,17 +13,17 @@ const NoteCard = ({
   onDelete,
 }) => {
   return (
-    <div className="border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out">
+    <div className="border rounded p-4 bg-bgNavBar mb-2 hover:shadow-xl transition-all ease-in-out">
       <div className="flex items-center justify-between">
         <div>
-          <h6 className="text-sm font-medium">{title}</h6>
+          <h6 className="text-base font-medium ">{title}</h6>
           <span className="text-xs text-green-700">
             {moment(date).format("DD/MM/YYYY")}
           </span>
         </div>
 
         <MdOutlinePushPin
-          className={`icon-btn ${isPinned ? "text-[#2B85FF] " : "text-slate-300"
+          className={`icon-btn ${isPinned ? "text-[red] " : "text-slate-300"
             }`}
           onClick={onPinNote}
         />

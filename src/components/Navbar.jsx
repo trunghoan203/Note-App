@@ -11,6 +11,7 @@ import {
   signoutStart,
 } from "../redux/user/userSlice";
 import axios from "axios";
+import logo from './../assets/image/logo.png';
 
 const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,7 +46,7 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
 
       toast.success(res.data.message);
       dispatch(signInSuccess());
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       toast.error(error.message);
       dispatch(signoutFailure(error.message));
@@ -53,12 +54,11 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   };
 
   return (
-    <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
+    <div className="bg-customGray flex items-center justify-between px-6 py-2 drop-shadow">
       <Link to={"/"}>
-        <h2 className="text-xl font-medium text-black py-2">
-          <span className="text-slate-500">Memo</span>
-          <span className="text-slate-900">Mind</span>
-        </h2>
+        <div className="text-center">
+          <img src={logo} alt="MemmoMind Logo" className="w-20" />
+        </div>
       </Link>
 
       <SearchBar

@@ -13,7 +13,7 @@ const ProfileInfo = ({ onLogout, userInfo }) => {
       </div>
 
       <button
-        className="text-sm bg-red-500 p-1 rounded-md text-white hover:opacity-80"
+        className="text-xs bg-bgsubmit p-2 rounded-md text-white hover:opacity-80"
         onClick={onLogout}
       >
         Đăng xuất
