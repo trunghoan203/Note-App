@@ -13,20 +13,31 @@ const NoteCard = ({
   onDelete,
 }) => {
   return (
-    <div className="border rounded p-4 bg-bgNavBar mb-2 hover:shadow-xl transition-all ease-in-out">
+    <div className="border-black rounded p-4 bg-[#A9A9A9] hover:shadow-xl transition-all ease-in-out mb-1">
       <div className="flex items-center justify-between">
         <div>
-          <h6 className="text-base font-medium ">{title}</h6>
-          <span className="text-xs text-green-700">
+          <h6 className="text-sm font-medium">{title}</h6>
+          <span className="text-xs text-black">
             {moment(date).format("DD/MM/YYYY")}
           </span>
         </div>
 
-        <MdOutlinePushPin
-          className={`icon-btn ${isPinned ? "text-[red] " : "text-slate-300"
+        <div className="flex items-center gap-2">
+          <MdOutlinePushPin
+            className={`hover:text-[#C8BBBB] icon-btn ${
+              isPinned ? "text-black" : "text-slate-300"
             }`}
-          onClick={onPinNote}
-        />
+            onClick={onPinNote}
+          />
+          <MdCreate
+            className="icon-btn hover:text-[#C8BBBB]"
+            onClick={onEdit}
+          />
+          <MdDelete
+            className="icon-btn hover:text-[#C8BBBB]"
+            onClick={onDelete}
+          />
+        </div>
       </div>
 
       <p className="text-xs text-slate-600 mt-2">{content.slice(0, 60)}</p>
@@ -34,18 +45,6 @@ const NoteCard = ({
       <div className="flex items-center justify-between mt-2">
         <div className="text-xs text-slate-500">
           {tags.map((item) => `#${item} `)}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <MdCreate
-            className="icon-btn hover:text-green-600"
-            onClick={onEdit}
-          />
-
-          <MdDelete
-            className="icon-btn hover:text-red-500"
-            onClick={onDelete}
-          />
         </div>
       </div>
     </div>
@@ -67,7 +66,7 @@ NoteCard.propTypes = {
 // Define default props
 NoteCard.defaultProps = {
   content: "", // Default empty string if no content provided
-  tags: [],    // Default empty array if no tags provided
+  tags: [], // Default empty array if no tags provided
 };
 
 export default NoteCard;
